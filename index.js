@@ -5,6 +5,8 @@ var emailModel = require('./schemasMongo/EmailReceipt');
 var otpModel = require('./schemasMongo/OtpReceipt');
 var SaleRecipt = require('./schemasMongo/SaleReceipt');
 var {Reservation} = require('./schemasMongo/Reservation')
+var UserModel = require('./schemasMongo/UserModel')
+var LocationModel = require('./schemasMongo/LocationModel')
 //Creating a database named "db":
 var url = "mongodb://localhost:27017/db?appname=MongoDB%20Compass&ssl=false";
 mongoose.set("strictQuery", false);
@@ -56,6 +58,8 @@ async function go(){
   console.log("----",z)
 }
 go();
+
+
 // otpModel.find({}).deleteOne().exec();  
 // console.log("removed")
 // otpModel.findOneAndDelete({},{"sort": { "_id": -1 }})
@@ -97,6 +101,18 @@ go();
 
 // delete data
 // usersModel.find({ name:"Bilal" }).remove().exec();
+
+// populate (populating location model with user model)
+LocationModel.find({})
+  .populate({path:'userId', select: 'name'})
+  .exec()
+  .then(userLoc => {
+    console.log('Loc with user details:', userLoc);
+  })
+  .catch(err => {
+    console.error(err);
+  });
+
 
 //create server
 http.createServer(function (request, response) {
